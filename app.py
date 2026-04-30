@@ -113,9 +113,9 @@ if uploaded_file is not None:
     st.subheader("Predicted Tumor Mask")
     st.image(pred_mask, caption="Predicted Mask", use_container_width=True)
 
-    # ⭐ NEW: Large standalone tumor mask
-    st.subheader("Tumor Mask (Large View)")
-    st.image(pred_mask, caption="Large Tumor Mask", use_container_width=True)
+   
+    st.subheader("Segmented Tumor")
+    st.image(pred_mask, caption="Segmented Tumor", use_container_width=True)
 
     # Overlay Visualization
     st.subheader("MRI + Predicted Mask Overlay")
