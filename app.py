@@ -70,7 +70,7 @@ model = UNet()
 
 model.load_state_dict(
     torch.load(
-        "C:/Users/bincy/Downloads/model (1).pth",
+        "model (1).pth",
         map_location=torch.device("cpu")
     )
 )
