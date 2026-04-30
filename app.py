@@ -93,65 +93,42 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
     # Load image
     image = Image.open(uploaded_file).convert("L")
-
-    # Use bigger size for clearer output
     image = image.resize((256, 256))
 
     img_array = np.array(image) / 255.0
 
     st.subheader("Uploaded MRI Image")
-    st.image(
-        img_array,
-        caption="Original MRI",
-        use_container_width=True
-    )
+    st.image(img_array, caption="Original MRI", use_container_width=True)
 
-    # Convert to tensor for model
-    input_tensor = torch.tensor(
-        img_array,
-        dtype=torch.float32
-    ).unsqueeze(0).unsqueeze(0)
+    # Convert to tensor
+    input_tensor = torch.from_numpy(img_array).float().unsqueeze(0).unsqueeze(0)
 
     # Predict
     with torch.no_grad():
         pred_mask = model(input_tensor)
 
     pred_mask = pred_mask.squeeze().numpy()
-
-    # Threshold mask for better visibility
     pred_mask = (pred_mask > 0.5).astype(float)
 
     st.subheader("Predicted Tumor Mask")
-    st.image(
-        pred_mask,
-        caption="Predicted Mask",
-        use_container_width=True
-    )
+    st.image(pred_mask, caption="Predicted Mask", use_container_width=True)
 
-    # ----------------------------
     # Overlay Visualization
-    # ----------------------------
     st.subheader("MRI + Predicted Mask Overlay")
-    
 
     fig, ax = plt.subplots(1, 3, figsize=(18, 6))
 
-    # 1. Input Image
-    ax[0].imshow(image)
+    ax[0].imshow(image, cmap="gray")
     ax[0].set_title("Input Image")
     ax[0].axis("off")
 
-    # 2. Gray Image
     ax[1].imshow(img_array, cmap="gray")
     ax[1].set_title("Gray MRI Image")
     ax[1].axis("off")
 
-    # 3. Segmented Image
     ax[2].imshow(img_array, cmap="gray")
     ax[2].imshow(pred_mask, cmap="Reds", alpha=0.5)
     ax[2].set_title("Segmented Tumor")
     ax[2].axis("off")
 
     st.pyplot(fig)
-
-    
